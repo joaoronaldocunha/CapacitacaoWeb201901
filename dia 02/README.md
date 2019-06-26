@@ -175,3 +175,7 @@ const get = function (req, res) {
 ```
 
 8. Agora ele deve retornar o valor.
+9. Vamos salvar as mudanças.
+10. Executar o comando `git add ."`
+11. Executar o comando `git commit -m "adicionado tasks controller"`
+12. Executar o comando `git push`
