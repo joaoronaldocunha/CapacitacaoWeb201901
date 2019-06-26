@@ -1,116 +1,177 @@
-# Dia 01 - Capacitação Web 2019-01
+# Dia 02 - Capacitação Web 2019-01
 
-Neste documento são apresentados os passos para execução das atividades executadas no dia 01 do cursod e capacitação Web.
+Neste documento são apresentados os passos para execução das atividades executadas no dia 02 do curso de capacitação Web.
 
-## Instalando as Ferramentas de Desenvolvimento
+## Organizando o Projeto
 
-- Baixar e Instalar Node (https://nodejs.org/en/download/)
-- Baixar e Instalar Visual Studio Code (https://code.visualstudio.com/download)
-- Baixar e Instalar Git-Bash (https://git-scm.com/downloads)
+1. Vamos começar organizando nosso projeto.
+2. Crie uma pasta `routes` onde iremos colocar nosso conteúdo do servidor
+3. Dentro dessa pasta, vamos criar o arquivo `index.js` dentro da pasta `routes`
+4. Colocar o seguinte conteúdo neste arquivo:
 
-## Criando Repositório Back-End
-
-1. Acessar página http://github.com
-2. Se não tiver cadastro, criar nova conta gratuita.
-3. Efetuar login
-4. Criar novo repositório Git
-5. Após criar novo repositório, clicar em opção para efetuar *clone* do repositório 
-
-> Segue link de vídeo contendo curso básico de Git: https://www.youtube.com/playlist?list=PLInBAd9OZCzzHBJjLFZzRl6DgUmOeG3H0
-
-## Baixando Cópia do Repositório na Máquina Local 
-
-1. Abrir o Visual Studio Code
-2. Acessar o terminal (Menu View > Terminal)
-3. Acessar uma pasta onde deseja baixar o seu repositório Git (eg Desktop)
-4. Efetuar comando git para clonar repositório
-    `git clone <url-copiado-do-git-hub>`
-
-## Criar Arquivo a ser Servido
-
-1. Abrir no Visual Studio Code a pasta que corresponde ao repositório clonado a pouco na sua máquina
-2. Criar novo arquivo na pasta chamado `server.js`
-3. Escrever o seguinte código
 ```javascript
-const http = require('http')
+const express = require('express');
 
-var server = http.createServer(function (req, res) {
-    res.end("Hello World");
-}).listen(3000);
+const routes = express.Router();
+
+routes.get("/", function (req, res) {
+    res.send('Capacitação Desenvolvedor Web');    
+};);
+
+module.exports = routes;
 ```
-4. Acessar o terminal (Menu View > Terminal)
-5. Executar o comando `node server.js`
-6. Abrir o Navegador Web e acessar a página http://localhost:3000 
-7. Interromper a executar do node através do Ctrl+C
 
+5. Agora vamos criar o arquivo `index.js` dentro da pasta `routes`
 
-## Salnvando mudanças no Repositório
+```javascript
+const express = require('express');
 
-1. Notem que as mudanças que fizemos até agora (criação do arquivo server.js) foram detectadas pelo Visual Studio Code. Isso acontece porque a pasta aberta no Visual Studio Code é uma cópia local do repositório que criamos no Github e o arquivo server.js não existe no repositório remoto, somente na máquina local.
-2. Podemos subir essas mudanças para o nosso repositório remoto. 
-3. Acessar o terminal (Menu View > Terminal)
-4. Executar o comando `git add .` (este comando adiciona arquivos novos)
-5. Executar o comando `git commit -m "criado server.js"` (este comando confirma as mudanças na cópia local do repositório)
-6. Executar o comando `git push` (este comando submete as mudanças para o repositório remoto)
+const routes = express.Router();
 
-> Pode ser necessário efetuar login usando seu mesmo usuário e senha do Gitub para que você possa atualizar seu repositório remoto.
-> Toda mudança na cópia local irá indicar como diferente do repositório remoto. É recomendável sempre quando houver mudanças relevantes, que estas sejam enviadas para o repositório.
+routes.use("/", require('./info'));
 
-## Utilizando Pacoate NPM
+module.exports = routes;
+```
 
-Fizemos a criação inicial o servidor JS usando recursos básicos. Mas existem pacotes Node que possuem vários recursos novos. Um deles é o express. Mas para usá-lo, precisamos instalar esse pacote.
+> Note que estamos usando rotas do Express. Ao acessar o caminho "/", usa-se o arquivo info.js contido em "/routes"
 
-1. Abrir no Visual Studio Code a pasta que corresponde ao repositório clonado a pouco na sua máquina
-2. Acessar o terminal (Menu View > Terminal)
-3. Executar o comando `npm init`
-4. Seguir com todas as opções padrão. Será criado o arquivo package.json
-5. Executar o comando `npm install express --save`. Este comando irá instalar o pacote express e incluí-lo no arquivo package.json
-
-> A dependência para o pacote "express" é adicionado no arquivo package.json. Para instalar local este pacote, pode-se agora executar somente `npm install`
-
-6. Alterar o arquivo `server.js`:
+6. Agora vamos criar o arquivo `app.js` na raiz da pasta.
+7. Colocar o seguinte conteúdo neste arquivo:
 
 ```javascript
 const express = require('express');
 
 const app = express();
 
-app.get('/', function (req, res) {
-    res.send('Hello World');
-});
+app.use('/', require('./routes'));
 
-app.listen(3000);
+module.exports = app;
 ```
 
-7. Executar o comando `node server.js`
-8. Abrir o Navegador Web e acessar a página http://localhost:3000 
-9. Interromper a executar do node através do Ctrl+C
-10. Note agora que o Visual Studio Code aponta várias alterações no repositório local para serem enviadas para o repositório remoto. Porém, a pasta node_modules não deve ser enviada para o repositório remoto. 
-11. Adiciona o arquivo `.gitignore` para incluir a pasta node_modules como pasta a ser ignorada pelo Git. Coloque o seguinte conteúdo neste arquivo:
+> Note que estamos usando rotas do Express. Ao acessar o caminho "/", usa-se o arquivo index.js contido em "/routes"
+
+7. Alterar o arquivo `server.js` para usar o `app.js`:
 
 ```javascript
-node_modules
+const app = require('./app');
+
+const port = 3000;
+
+app.listen(port);
 ```
 
-12. Note que agora as alterações são apenas do arquivo `server.js`
-13. Executar o comando `git commit -m "aualizado para express"`
-14. Executar o comando `git push`
+8. Executar via terminal o comando `npm run dev`. Este comando irá executar o server e monitorar as mudanças no arquivo.
+9. Acessar o navegador Web acessando a porta 3000
+10. caso não tenha funcionado, rever as mudanças realizadas neste tópico.
+11. Executar o comando `git add ."`
+12. Executar o comando `git commit -m "reestruturado server"`
+13. Executar o comando `git push`
 
-## Utilizando Node Monitor
+## Criando Controller
 
-1. Abrir no Visual Studio Code a pasta que corresponde ao repositório clonado a pouco na sua máquina
-2. Acessar o terminal (Menu View > Terminal)
-3. Executar o comando `npm install nodemon --save-dev`. Este comando irá instalar o pacote nodemon como dependência de desenvolvimento e incluí-lo no arquivo package.json
-4. Alerar o package.json para incluirnovo script npm. Altere o `scripts` para que fique da seguinte forma:
+1. Na raiz do projeto, criar a pasta `controllers`
+2. Nesta pasta, criar o arquivo `info.controller.js`
+3. Adicionar o seguinte cotneúdo:
 
 ```javascript
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  }
+const get = function (req, res) {
+    res.send('Capacitação Desenvolvedor Web');    
+};
+
+module.exports = { get };
 ```
 
-5. Executar via terminal o comando `npm run dev`. Este comando irá executar o server e monitorar as mudanças no arquivo.
-6. Ao alterar a mensagem em `res.send('Hello World');` e salvar o arquivo server.js, automaticamente será atualizado o conteúdo do arquivo executado no Node. Ao atualizar o navegador Web, o conteúdo exibido será atualizado.
+4. Alterar o arquivo `\routes\info.js`:
 
+```javascript
+const express = require('express');
+const infoController = require('../controllers/info.controller');
 
+const routes = express.Router();
+
+routes.get("/", infoController.get);
+
+module.exports = routes;
+```
+
+> Note que estamos utilizando o controller recém criado.
+
+## Criando Tasks Controller e API
+
+1. Vamos agora criar o controller de tasks. Criar o arquivo `\controllers\tasks.controller.js`.
+2. Adicionar o seguinte conteúdo: 
+
+```javascript
+const get = function (req, res) {
+    
+};
+
+const create = function (req, res) {
+    
+};
+
+const update = function (req, res) {
+    
+};
+
+const remove = function (req, res) {
+    
+};
+
+module.exports = { get, create, update, remove };
+```
+
+3. Criar o arquivo `\routes\tasks.js`.
+4. Adicionar o seguinte conteúdo: 
+
+```javascript
+const express = require('express');
+const tasksController = require('../controllers/tasks.controller');
+
+const routes = express.Router();
+
+routes.get("/", tasksController.get);
+routes.post("/", tasksController.create);
+routes.put("/", tasksController.update);
+routes.delete("/", tasksController.remove);
+
+module.exports = routes;
+```
+
+5. Alterar o arquivo `routes\index.js` com o seguinte conteúdo:
+
+```javascript
+const express = require('express');
+
+const routes = express.Router();
+
+routes.use("/", require('./info'));
+routes.use("/tasks", require('./tasks'));
+
+module.exports = routes;
+```
+
+6. Agora, ao acessar o caminho http://localhost:3000/tasks
+
+> Note que ele não retorna nada. Isso porque ainda não estamos enviando nada do servidor.
+
+7. Volte no arquivo `\controllers\tasks.controller.js` e altere a função associada a constante get:
+
+```javascript
+const get = function (req, res) {
+    const tasks = [
+        {
+            "title": "Aprender HTML",
+            "description": "Estudar a tag body"
+        },
+        {
+            "title": "Aprender CSS",
+            "description": "Estudar seletores"
+        }
+    ];
+
+    res.send(tasks);
+};
+```
+
+8. Agora ele deve retornar o valor.
